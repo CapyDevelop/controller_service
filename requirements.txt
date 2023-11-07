@@ -16,3 +16,4 @@ pycodestyle==2.11.1
 pyflakes==3.1.0
 python-dotenv==1.0.0
 Werkzeug==3.0.1
+git+https://github.com/alexseipopov/user_service_grpc.git@main

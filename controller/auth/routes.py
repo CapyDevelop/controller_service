@@ -1,13 +1,15 @@
-import auth_service.authservice_pb2 as pb2
-from flask import request, make_response
 import logging
+
+import auth_service.authservice_pb2 as pb2
+from flask import make_response, request
 
 from controller import auth_service_stub
 
 from . import auth
 
-
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - '
+                           '%(levelname)s - %(message)s')
 
 
 def validate_login_data(data):
@@ -30,26 +32,27 @@ def login():
         }, 400
     username = data["username"]
     password = data["password"]
-    logging.info(f"Start request to rRPC server")
+    logging.info("Start request to rRPC server")
     grpc_request = pb2.LoginRequest(username=username, password=password)
     grpc_response = auth_service_stub.login(grpc_request)
-    logging.info(f"Receive response from rRPC server")
+    logging.info("Receive response from rRPC server")
     if grpc_response.status != 0:
-        logging.info(f"Error response from rRPC server")
+        logging.info("Error response from rRPC server")
         return {
             "status": "FAIL",
             "status_code": 1,
             "message": grpc_response.description,
             "data": {}
         }
-    logging.info(f"Success response from rRPC server")
+    logging.info("Success response from rRPC server")
     response = make_response({
         "status": "OK",
         "status_code": 0,
         "message": "Success",
         "data": {}
     })
-    response.set_cookie("capy-uuid", grpc_response.uuid, samesite="None", secure=True)
+    response.set_cookie("capy-uuid", grpc_response.uuid,
+                        samesite="None", secure=True)
     return response
 
 
@@ -75,6 +78,7 @@ def check_signin():
 @auth.get("/logout")
 def logout():
     is_uuid = request.cookies.get("capy-uuid")
+    print(is_uuid)
     if not is_uuid:
         return {
             "status": "FAIL",
