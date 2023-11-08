@@ -71,4 +71,4 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             docker pull alexseipopov/controller_service:latest
-            docker-compose -f ~/capybaras/docker-compose.yml up --no-deps --build -d controller_service
+            docker-compose -f ~/capybaras/docker-compose.yml up --no-deps --build -d controller
