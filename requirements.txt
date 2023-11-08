@@ -15,5 +15,6 @@ protobuf==4.25.0
 pycodestyle==2.11.1
 pyflakes==3.1.0
 python-dotenv==1.0.0
+school-service-grpc @ git+https://github.com/alexseipopov/capybaras_school_service_grpc.git@main
+user-service-grpc @ git+https://github.com/alexseipopov/user_service_grpc.git@main
 Werkzeug==3.0.1
-git+https://github.com/alexseipopov/user_service_grpc.git@main

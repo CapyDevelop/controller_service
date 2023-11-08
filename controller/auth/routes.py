@@ -21,9 +21,10 @@ def validate_login_data(data):
 
 @auth.post("/login")
 def login():
-    logging.info("Login request")
+    logging.info("[ | API | Login ] - Login request. ----- START -----")
     data = validate_login_data(request.json)
     if not data:
+        logging.info("[ | API | Login ] - Not such data. ----- END -----")
         return {
             "status": "FAIL",
             "status_code": 2,
@@ -32,19 +33,19 @@ def login():
         }, 400
     username = data["username"]
     password = data["password"]
-    logging.info("Start request to rRPC server")
+    logging.info("[ | API | Login ] - Start request to auth_server")
     grpc_request = pb2.LoginRequest(username=username, password=password)
     grpc_response = auth_service_stub.login(grpc_request)
-    logging.info("Receive response from rRPC server")
+    logging.info("[ | API | Login ] - Receive response from auth_server")
     if grpc_response.status != 0:
-        logging.info("Error response from rRPC server")
+        logging.info("[ | API | Login ] - Error response from rRPC server. ----- END -----")
         return {
             "status": "FAIL",
             "status_code": 1,
             "message": grpc_response.description,
             "data": {}
         }
-    logging.info("Success response from rRPC server")
+    logging.info("[ | API | Login ] - Success response from rRPC server. ----- END -----")
     response = make_response({
         "status": "OK",
         "status_code": 0,
