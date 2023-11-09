@@ -1,7 +1,7 @@
 import logging
 
 import user_service.user_service_pb2 as user_pb2
-from flask import request, make_response
+from flask import make_response, request
 
 from controller import user_service_stub
 
