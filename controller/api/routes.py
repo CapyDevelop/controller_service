@@ -1,7 +1,7 @@
 import logging
 
 import user_service.user_service_pb2 as user_pb2
-from flask import request
+from flask import request, make_response
 
 from controller import user_service_stub
 
@@ -26,6 +26,12 @@ def get_user_data():
     rp_request = user_pb2.GetRpRequest(capy_uuid=capy_uuid)
     rp_response = user_service_stub.get_rp(rp_request)
     logging.info("[ | API | GET USER DATA ] - Receive response from user_service (get_rp method)")
+    if rp_response.status == 13:
+        logging.info("[ | API | GET USER DATA ] - Error response from user_service (get_rp method). ----- END -----")
+        response = make_response(generate_response(status="FAIL", status_code=13,
+                                                   description="Ваш токен устарел. Необходимо авторизоваться заново"))
+        response.set_cookie("capy-uuid", "", samesite="None", secure=True)
+        return response, 200
     if rp_response.status != 0:
         logging.info("[ | API | GET USER DATA ] - Error response from user_service (get_rp method). ----- END -----")
         return generate_response(status="FAIL", status_code=1, description=rp_response.description), 401
