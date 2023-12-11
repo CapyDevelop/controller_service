@@ -1,6 +1,7 @@
 import logging
 
 import auth_service.authservice_pb2 as pb2
+from flasgger import swag_from
 from flask import make_response, request
 
 from controller import auth_service_stub
@@ -19,6 +20,74 @@ def validate_login_data(data):
     return data
 
 
+@swag_from({
+    "tags": ["Auth"],
+    "description": "Login",
+    "parameters": [
+        {
+            "name": "username",
+            "in": "body",
+            "type": "string",
+            "required": True,
+            "example": "nickname@student.21-school.ru"
+        },
+        {
+            "name": "password",
+            "in": "body",
+            "type": "string",
+            "required": True,
+            "example": "123456"
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "OK",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 0,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Success",
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "FAILURE",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 1,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Not such data",
+                    }
+                }
+            }
+        }
+    }
+})
 @auth.post("/login")
 def login():
     logging.info("[ | API | Login ] - Login request. ----- START -----")
@@ -57,6 +126,65 @@ def login():
     return response
 
 
+@swag_from({
+    "tags": ["Auth"],
+    "description": "Check signin",
+    "parameters": [
+        {
+            "name": "capy-uuid",
+            "in": "cookie",
+            "type": "string",
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "OK",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 0,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Success",
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "FAILURE",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 1,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Not such data",
+                    }
+                }
+            }
+        }
+    }
+})
 @auth.get("/check_signin")
 def check_signin():
     is_uuid = request.cookies.get("capy-uuid")
@@ -76,6 +204,65 @@ def check_signin():
     }, 200
 
 
+@swag_from({
+    "tags": ["Auth"],
+    "description": "Logout",
+    "parameters": [
+        {
+            "name": "capy-uuid",
+            "in": "cookie",
+            "type": "string",
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "OK",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "OK",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 0,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Success",
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "FAILURE",
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 1,
+                    },
+                    "data": {
+                        "type": "object",
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Not such data",
+                    }
+                }
+            }
+        }
+    }
+})
 @auth.get("/logout")
 def logout():
     is_uuid = request.cookies.get("capy-uuid")

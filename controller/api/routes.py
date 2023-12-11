@@ -1,6 +1,7 @@
 import logging
 
 import user_service.user_service_pb2 as user_pb2
+from flasgger import swag_from
 from flask import make_response, request
 
 from controller import user_service_stub
@@ -14,6 +15,99 @@ from controller.utils import generate_response
 from . import api
 
 
+@swag_from({
+    "tags": ["User"],
+    "description": "Get user data",
+    "parameters": [
+        {
+            "name": "capy-uuid",
+            "in": "cookie",
+            "type": "string",
+            "required": True,
+        }
+    ],
+    "responses": {
+        "200": {
+            "description": "OK",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": ["OK", "FAIL"],
+                        "example": "OK"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Success"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "coins": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "prp": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "crp": {
+                                "type": "integer",
+                                "example": 100
+                            },
+                            "level": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "first_name": {
+                                "type": "string",
+                                "example": "Ivan"
+                            },
+                            "last_name": {
+                                "type": "string",
+                                "example": "Ivanov"
+                            },
+                            "login": {
+                                "type": "string",
+                                "example": "ivanov"
+                            }
+                        }
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                }
+            }
+        },
+        "401": {
+            "description": "Unauthorized",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": ["FAIL"],
+                        "example": "FAIL"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Unauthorized"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {}
+                    },
+                    "status_code": {
+                        "type": "integer",
+                        "example": 10
+                    }
+                }
+            }
+        }
+    }
+})
 @api.get("/get_user_data")
 def get_user_data():
     logging.info("[ | API | GET USER DATA ] - Get user data request. ----- START -----")
