@@ -1,10 +1,11 @@
 import logging
 
+import election_service.election_grpc_pb2 as election_pb2
 import user_service.user_service_pb2 as user_pb2
 from flasgger import swag_from
 from flask import make_response, request
 
-from controller import user_service_stub
+from controller import election_service_stub, user_service_stub
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - '
@@ -140,3 +141,95 @@ def get_user_data():
         "login": rp_response.login,
     }
     return generate_response(data=data)
+
+
+@api.get("/check_election")
+def check_election():
+    election_request = election_pb2.Empty()
+    election_response = election_service_stub.GetElection(election_request)
+    return generate_response(data={"election_status": election_response.status})
+
+
+@api.get("/check_uuid")
+def check_uuid():
+    tmp_uuid = request.cookies.get("tmp-uuid")
+    capy_uuid = request.cookies.get("capy-uuid")
+    print(tmp_uuid, capy_uuid)
+    if not tmp_uuid and not capy_uuid:
+        return {"status": 1}
+
+    return {"status": 0}
+
+
+@api.post("/register_candidate")
+def register_candidate():
+    tmp_uuid = request.cookies.get("tmp-uuid")
+    capy_uuid = request.cookies.get("capy-uuid")
+
+    about = request.json.get("about")
+
+    if not tmp_uuid and not capy_uuid:
+        return {"status": 1}
+
+    if not about:
+        return {"status": 2}
+
+    if tmp_uuid:
+        req = election_pb2.SetCandidateRequest(uuid=tmp_uuid, about=about)
+        res = election_service_stub.SetCandidateTmp(req)
+        return {"status": res.status, "description": res.description}
+    if capy_uuid:
+        req = election_pb2.SetCandidateRequest(uuid=capy_uuid, about=about)
+        res = election_service_stub.SetCandidateCapy(req)
+        return {"status": res.status, "description": res.description}
+
+
+@api.get("/check_register")
+def check_register():
+    tmp_uuid = request.cookies.get("tmp-uuid")
+    capy_uuid = request.cookies.get("capy-uuid")
+
+    print(tmp_uuid, capy_uuid)
+
+    if not tmp_uuid and not capy_uuid:
+        return {"status": 0}
+
+    if tmp_uuid:
+        req = election_pb2.CheckCandidateRequest(uuid=tmp_uuid)
+        res = election_service_stub.CheckCandidateTmp(req)
+        return {"status": res.status}
+    elif capy_uuid:
+        req = election_pb2.CheckCandidateRequest(uuid=capy_uuid)
+        res = election_service_stub.CheckCandidateCapy(req)
+        return {"status": res.status}
+
+
+@api.post("/send_code")
+def send_mail():
+    nickname = request.json.get("nickname")
+    if not nickname:
+        return {"status": 1}
+
+    req = election_pb2.SendPasswordRequest(mail=nickname)
+    res = election_service_stub.SendPassword(req)
+
+    return {"status": res.status, "description": res.description}
+
+
+@api.post("/confirm_code")
+def confirm_code():
+    nickname = request.json.get("nickname")
+    code = request.json.get("code")
+
+    if not nickname or not code:
+        return {"status": 1, "description": "Недостаточно данных"}
+
+    req = election_pb2.ConfirmPasswordRequest(mail=nickname, password=code)
+    res = election_service_stub.ConfirmPassword(req)
+    response = make_response({
+        "status": res.status,
+        "description": res.description
+    })
+    response.set_cookie("tmp-uuid", res.uuid,
+                        samesite="None", secure=True)
+    return response

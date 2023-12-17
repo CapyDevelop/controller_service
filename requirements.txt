@@ -31,3 +31,4 @@ school-service-grpc @ git+https://github.com/alexseipopov/capybaras_school_servi
 six==1.16.0
 user-service-grpc @ git+https://github.com/alexseipopov/user_service_grpc.git@main
 Werkzeug==3.0.1
+election-service-grpc @ git+https://github.com/CapyDevelop/grpc_election.git@main
