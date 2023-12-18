@@ -233,3 +233,43 @@ def confirm_code():
     response.set_cookie("tmp-uuid", res.uuid,
                         samesite="None", secure=True)
     return response
+
+
+@api.get("/mock_candidates")
+def candidates():
+    avatars = [
+        "https://s0.rbk.ru/v6_top_pics/media/img/5/90/756781807819905.webp",
+        "https://www.newsler.ru/data/content/2022/124529/fa587f34b2eef1d2847300e8472d702f.RPPkxCdwIDkMKjtWDnCVwqu5LZH6AC7uLkE_vf0uMbo",
+        "https://cdn.iportal.ru/news/2015/99/preview/373040953a4a814a9f983988a24f4a2b06e70980_1280_853_c.jpg",
+        "https://static.tildacdn.com/tild3762-3361-4530-b338-636461613366/1663115153_50-mykale.jpg",
+        "https://media.tinkoff.ru/stories/media/images/744dcd9447deeb0a8f10e024eb8616e5.png",
+        "https://cdn-st1.rtr-vesti.ru/vh/pictures/hd/413/562/0.jpg",
+        "https://natworld.info/wp-content/uploads/2018/02/vodosvinka-ili-kapibara.jpg"
+    ]
+    nicknames = [
+        "cherylls",
+        "wilfredo",
+        "suzibill",
+        "arrowwhi",
+        "garroshm",
+        "sharnasv",
+        "victarim"
+    ]
+    abouts = [
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. A architecto deserunt est facilis harum illo incidunt minima modi nobis, obcaecati officiis provident quas, quasi quis reiciendis sapiente sunt temporibus, vero!",
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi nobis sunt, ullam ut velit voluptatibus! Ad blanditiis debitis dolores et explicabo, fuga id odio placeat rerum sunt? Ab, aspernatur aut, cupiditate, deserunt labore laboriosam mollitia nam officia repudiandae temporibus voluptas voluptates voluptatibus. Fugiat in, maxime nesciunt porro quas qui unde.",
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis earum enim et facere fugit illo inventore nisi quae totam vitae. Amet corporis est ex libero molestiae nemo nulla sequi sunt!",
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi, fugiat?",
+        """Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, neque, numquam? Commodi consectetur consequatur ducimus, ea eaque ex fuga id ipsa laborum nihil omnis, quibusdam quis similique, sint tenetur velit vero? Ducimus eius error et illo ipsa, itaque laudantium obcaecati quidem repellendus repudiandae rerum sapiente, tenetur voluptatum. At consectetur dicta dolorum eaque laboriosam quasi recusandae. Accusantium aspernatur consectetur, 
+        distinctio maiores minus possimus qui? Aliquam amet blanditiis, dignissimos eius ipsum laudantium molestiae nobis quam reprehenderit tempore! Ab aperiam aspernatur at commodi, dolorum eius, fugit iusto laboriosam laborum natus obcaecati quisquam reiciendis rerum sapiente soluta totam voluptate voluptates. Amet asperiores ipsam sapiente?""",
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex facere magni tenetur. Ab adipisci amet consequuntur debitis esse est eum exercitationem ipsam, labore laborum, minus nihil, obcaecati officia officiis provident quis quisquam ratione rem repellat sapiente sequi sint sit totam veniam voluptatum? Accusantium aliquam, aliquid beatae, consequatur dolore ducimus enim eos eum explicabo natus nesciunt nihil porro quisquam rem repellat reprehenderit similique unde voluptatum? Dolor expedita itaque neque, odio quas ut voluptatem? Neque sint, voluptates.",
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad asperiores assumenda delectus deserunt dolorem, dolorum et eum ex exercitationem explicabo facere illum inventore labore laboriosam libero mollitia nam nulla officia provident quam quasi quod reiciendis repellat sunt ullam vel. Ab consectetur debitis dignissimos, distinctio doloribus eaque illum libero perferendis ratione rerum sed sequi temporibus.",
+    ]
+    return {
+        "status": 0,
+        "data": [{
+            "image": avatars[i],
+            "nickname": nicknames[i],
+            "about": abouts[i]
+        } for i in range(7)]
+    }
