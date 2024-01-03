@@ -32,3 +32,4 @@ six==1.16.0
 user-service-grpc @ git+https://github.com/alexseipopov/user_service_grpc.git@main
 Werkzeug==3.0.1
 election-service-grpc @ git+https://github.com/CapyDevelop/grpc_election.git@main
+storage-service-grpc @ git+https://github.com/CapyDevelop/storage_service_grpc.git@main

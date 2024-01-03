@@ -3,6 +3,7 @@ import os
 import auth_service.authservice_pb2_grpc as auth_pb2_grpc
 import election_service.election_grpc_pb2_grpc as election_pb2_grpc
 import grpc
+import storage.storage_service_pb2_grpc as storage_pb2_grpc
 import user_service.user_service_pb2_grpc as user_pb2_grpc
 from dotenv import load_dotenv
 from flasgger import Swagger
@@ -30,6 +31,10 @@ user_service_stub = user_pb2_grpc.UserServiceStub(user_service_channel)
 election_service_channel = grpc.insecure_channel(
     f"{os.getenv('ELECTION_SERVICE_HOST')}:{os.getenv('ELECTION_SERVICE_PORT')}")
 election_service_stub = election_pb2_grpc.ElectionServiceStub(election_service_channel)
+
+storage_service_channel = grpc.insecure_channel(
+    f"{os.getenv('STORAGE_SERVICE_HOST')}:{os.getenv('STORAGE_SERVICE_PORT')}")
+storage_service_stub = storage_pb2_grpc.StorageServiceStub(storage_service_channel)
 
 from controller.api import api
 

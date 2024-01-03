@@ -1,11 +1,14 @@
 import logging
+import time
 
 import election_service.election_grpc_pb2 as election_pb2
+import storage.storage_service_pb2 as storage_pb2
 import user_service.user_service_pb2 as user_pb2
 from flasgger import swag_from
 from flask import make_response, request
+from werkzeug.utils import secure_filename
 
-from controller import election_service_stub, user_service_stub
+from controller import election_service_stub, user_service_stub, storage_service_stub
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - '
@@ -130,6 +133,15 @@ def get_user_data():
     if rp_response.status != 0:
         logging.info("[ | API | GET USER DATA ] - Error response from user_service (get_rp method). ----- END -----")
         return generate_response(status="FAIL", status_code=1, description=rp_response.description), 401
+    req = user_pb2.GetAvatarRequest(capy_uuid=capy_uuid)
+    res = user_service_stub.get_avatar(req)
+    avatar = None
+    if not res or not res.avatar:
+        logging.info("[ | API | GET USER DATA ] - No Set avatar. Take default ----- END -----")
+        avatar = "https://capyavatars.storage.yandexcloud.net/avatar/default/default.webp"
+    else:
+        logging.info("[ | API | GET USER DATA ] - Avatar set ----- END -----")
+        avatar = f"https://capyavatars.storage.yandexcloud.net/avatar/{capy_uuid}/{res.avatar}"
     logging.info("[ | API | GET USER DATA ] - Success response from user_service (get_rp method). ----- END -----")
     data = {
         "coins": rp_response.coins,
@@ -139,6 +151,7 @@ def get_user_data():
         "first_name": rp_response.first_name,
         "last_name": rp_response.last_name,
         "login": rp_response.login,
+        "avatar": avatar
     }
     return generate_response(data=data)
 
@@ -350,3 +363,32 @@ def vote_statistic():
         "count_voter": res.count_voter,
         "percent_voter": res.percent_voter
     }
+
+
+def prepare(file, capy_uuid, filename):
+    while True:
+        piece = file.read(1024)
+        if not piece:
+            break
+        yield storage_pb2.PutRequest(uuid=capy_uuid, filename=filename, data=piece)
+
+
+@api.post("/upload")
+def upload():
+    capy_uuid = request.cookies.get("capy-uuid")
+
+    if not capy_uuid:
+        return {"status": 1, "description": "Вы не авторизованы для этой операции"}
+
+    avatar = request.files.get("avatar")
+
+    if not avatar:
+        return {"status": 1, "description": "Не указан файл"}
+
+    fn = secure_filename(avatar.filename)
+    fn_ext = fn.rsplit('.', 1)[1].lower() if '.' in fn else ''
+    t = time.time()
+    filename = f'{int(t)}.{fn_ext}' if fn_ext else str(int(t))
+    res = storage_service_stub.Put(prepare(avatar, capy_uuid, filename))
+
+    return {"status": res.status, "description": res.description}
