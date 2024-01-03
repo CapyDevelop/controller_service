@@ -8,7 +8,8 @@ from flasgger import swag_from
 from flask import make_response, request
 from werkzeug.utils import secure_filename
 
-from controller import election_service_stub, user_service_stub, storage_service_stub
+from controller import (election_service_stub, storage_service_stub,
+                        user_service_stub)
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - '
