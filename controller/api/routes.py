@@ -393,3 +393,31 @@ def upload():
     res = storage_service_stub.Put(prepare(avatar, capy_uuid, filename))
 
     return {"status": res.status, "description": res.description}
+
+
+@api.get("/peer_info")
+def peer_info():
+    capy_uuid = request.cookies.get("capy-uuid")
+    nickname = request.args.get("nickname")
+
+    if not capy_uuid:
+        return {"status": 1, "description": "Вы не авторизованы для этой операции"}
+
+    if not nickname:
+        return {"status": 1, "description": "Не указан nickname"}
+
+    res = user_service_stub.get_peer_info(user_pb2.GetPeerInfoRequest(
+        request_uuid=capy_uuid,
+        nickname=nickname
+    ))
+
+    return {
+        "status": res.status,
+        "description": res.description,
+        "data": {
+            "first_name": res.first_name,
+            "last_name": res.last_name,
+            "login": res.login,
+            "avatar": res.avatar
+        }
+    }

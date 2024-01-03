@@ -196,6 +196,7 @@ def check_signin():
             "message": "Not enough uuid",
             "data": {}
         }, 200
+    # TODO Сделать запрос в БД на подтверждение валидного UUID
     return {
         "status": "OK",
         "status_code": 0,
