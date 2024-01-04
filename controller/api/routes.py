@@ -421,3 +421,73 @@ def peer_info():
             "avatar": res.avatar
         }
     }
+
+
+@api.get("/get_friend_stats")
+def get_friend_stats():
+    capy_uuid = request.cookies.get("capy-uuid")
+
+    if not capy_uuid:
+        return {"status": 1, "description": "Вы не авторизованы для этой операции"}
+
+    res = user_service_stub.get_friend_stats(user_pb2.GetFriendStatsRequest(
+        capy_uuid=capy_uuid
+    ))
+
+    return {
+        "status": res.status,
+        "description": res.description,
+        "data": {
+            "friends": res.friends,
+            "subscribers": res.subscribers
+        }
+    }
+
+
+@api.get("/search_user")
+def search_user():
+    capy_uuid = request.cookies.get("capy-uuid")
+    nickname = request.args.get("nickname")
+
+    if not capy_uuid:
+        return {"status": 1, "description": "Вы не авторизованы для этой операции"}
+
+    if not nickname:
+        return {"status": 1, "description": "Не указан nickname"}
+
+    res = user_service_stub.search_user(user_pb2.SearchUserRequest(
+        capy_uuid=capy_uuid,
+        nickname=nickname
+    ))
+
+    return {
+        "status": res.status,
+        "description": res.description,
+        "data": {
+            "friends": [{"nickname": i.login, "avatar": i.avatar} for i in res.friends],
+            "on_platform": [{"nickname": i.login, "avatar": i.avatar} for i in res.on_platform],
+            "out_platform": [{"nickname": i.login, "avatar": i.avatar} for i in res.out_platform]
+        }
+    }
+
+
+@api.post("/add_friend")
+def add_friend():
+    capy_uuid = request.cookies.get("capy-uuid")
+    nickname = request.json.get("nickname")
+
+    if not capy_uuid:
+        return {"status": 1, "description": "Вы не авторизованы для этой операции"}
+
+    if not nickname:
+        return {"status": 1, "description": "Не указан nickname"}
+
+    res = user_service_stub.add_friend(user_pb2.AddFriendRequest(
+        capy_uuid=capy_uuid,
+        nickname=nickname
+    ))
+
+    return {
+        "status": res.status,
+        "description": res.description
+    }
