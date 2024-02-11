@@ -49,7 +49,7 @@ jobs:
             echo "${{ secrets.MY_ENV_VAR }}" > .env_docker
       - name: Push to Docker Hub
         uses: docker/build-push-action@v2
-        if: ${{ github.repository == 'alexseipopov/capybaras_controller' && github.ref == 'refs/heads/main' }}
+        if: ${{ github.repository == 'CapyDevelop/controller_service' && github.ref == 'refs/heads/main' }}
         with:
           context: .
           push: true
