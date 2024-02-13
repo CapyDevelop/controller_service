@@ -65,7 +65,7 @@ jobs:
           host: ${{ secrets.HOST_DEVELOP }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.PRIVATE_SSH_KEY_DEVELOP }}
-          passphrase: ${{ secrets.PASSPHRASE }}
+          passphrase: ${{ secrets.PASSPHRASE_DEVELOP }}
           script: |
             docker pull alexseipopov/controller_service:dev
             docker-compose -f ~/capybaras/docker-compose.yml up --no-deps --build -d controller
