@@ -59,6 +59,12 @@ jobs:
     needs: build_and_push_to_docker_hub
     if: github.ref == 'refs/heads/develop'
     steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY_DEVELOP }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H '${{ secrets.HOST_DEVELOP }}' >> ~/.ssh/known_hosts
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
         with:
