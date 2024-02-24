@@ -27,6 +27,9 @@ jobs:
 
       - name: Run isort
         run: isort . --check --diff
+
+      - name: Run pytest
+        run: pytest
   build_and_push_to_docker_hub:
     needs: style-check
     name: Push Docker image to Docker Hub
