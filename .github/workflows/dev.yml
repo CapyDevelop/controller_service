@@ -19,9 +19,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install flake8
-          pip install isort
-          pip install pytest
+          pip install -r requirements.txt
 
       - name: Run flake8
         run: flake8 .
