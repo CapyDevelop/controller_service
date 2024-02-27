@@ -124,6 +124,7 @@ def get_user_data():
     logging.info("[ | API | GET USER DATA ] - Start request to user_service (get_rp method)")
     rp_request = user_pb2.GetRpRequest(capy_uuid=capy_uuid)
     rp_response = user_service_stub.get_rp(rp_request)
+    # response = make_request(user_pb2.GetRpRequest, user_service_stub.get_rp, {"capy_uuid": capy_uuid})
     logging.info("[ | API | GET USER DATA ] - Receive response from user_service (get_rp method)")
     if rp_response.status == 13:
         logging.info("[ | API | GET USER DATA ] - Error response from user_service (get_rp method). ----- END -----")
