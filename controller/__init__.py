@@ -1,6 +1,7 @@
 import os
 
 import auth_service.authservice_pb2_grpc as auth_pb2_grpc
+import coalition_service.coalition_service_pb2_grpc as coalition_pb2_grpc
 import election_service.election_grpc_pb2_grpc as election_pb2_grpc
 import grpc
 import storage.storage_service_pb2_grpc as storage_pb2_grpc
@@ -23,6 +24,11 @@ auth_service_channel = grpc.insecure_channel(
     f"{os.getenv('AUTH_SERVICE_HOST')}:{os.getenv('AUTH_SERVICE_PORT')}"
 )
 auth_service_stub = auth_pb2_grpc.AuthServiceStub(auth_service_channel)
+
+coalition_service_channel = grpc.insecure_channel(
+    f"{os.getenv('COALITION_SERVICE_HOST')}:{os.getenv('COALITION_SERVICE_PORT')}"
+)
+coalition_service_stub = coalition_pb2_grpc.CoalitionServiceStub(coalition_service_channel)
 
 user_service_channel = grpc.insecure_channel(
     f"{os.getenv('USER_SERVICE_HOST')}:{os.getenv('USER_SERVICE_PORT')}")

@@ -1,6 +1,7 @@
 import logging
 import time
 
+import coalition_service.coalition_service_pb2 as coalition_pb2
 import election_service.election_grpc_pb2 as election_pb2
 import storage.storage_service_pb2 as storage_pb2
 import user_service.user_service_pb2 as user_pb2
@@ -8,8 +9,8 @@ from flasgger import swag_from
 from flask import make_response, request
 from werkzeug.utils import secure_filename
 
-from controller import (election_service_stub, storage_service_stub,
-                        user_service_stub)
+from controller import (coalition_service_stub, election_service_stub,
+                        storage_service_stub, user_service_stub)
 
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(name)s - '
@@ -456,18 +457,17 @@ def search_user():
     if not nickname:
         return {"status": 1, "description": "Не указан nickname"}
 
-    res = user_service_stub.search_user(user_pb2.SearchUserRequest(
-        capy_uuid=capy_uuid,
+    res = coalition_service_stub.get_members(user_pb2.GetMembersRequest(
         nickname=nickname
     ))
-
+    avatar = "https://capyavatars.storage.yandexcloud.net/avatar/default/default.webp"
     return {
         "status": res.status,
         "description": res.description,
         "data": {
-            "friends": [{"nickname": i.login, "avatar": i.avatar} for i in res.friends],
-            "on_platform": [{"nickname": i.login, "avatar": i.avatar} for i in res.on_platform],
-            "out_platform": [{"nickname": i.login, "avatar": i.avatar} for i in res.out_platform]
+            "friends": [{"nickname": i.login, "avatar": avatar} for i in res.members],
+            "on_platform": [{"nickname": i.login, "avatar": avatar} for i in res.members],
+            "out_platform": [{"nickname": i.login, "avatar": avatar} for i in res.members]
         }
     }
 
