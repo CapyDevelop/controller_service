@@ -457,7 +457,7 @@ def search_user():
     if not nickname:
         return {"status": 1, "description": "Не указан nickname"}
 
-    res = coalition_service_stub.get_members(user_pb2.GetMembersRequest(
+    res = coalition_service_stub.get_members(coalition_pb2.GetMembersRequest(
         nickname=nickname
     ))
     avatar = "https://capyavatars.storage.yandexcloud.net/avatar/default/default.webp"
