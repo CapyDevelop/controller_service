@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pytest
 from election_service import election_grpc_pb2
 from user_service import user_service_pb2
+from avatar import avatar_service_pb2
 
 from controller import app
 
@@ -26,7 +27,8 @@ def test_get_user_data_no_cookie(client):
 
 
 @patch("controller.user_service_stub.get_rp")
-@patch("controller.user_service_stub.get_avatar")
+# @patch("controller.user_service_stub.get_avatar")
+@patch("controller.avatar_service_stub.GetAvatar")
 def test_get_user_data_with_cookie(mock_get_avatar, mock_get_rp, client):
     mock_get_rp.return_value = user_service_pb2.GetRpResponse(
         coins=100,
@@ -39,7 +41,12 @@ def test_get_user_data_with_cookie(mock_get_avatar, mock_get_rp, client):
         status=0,
         description="Success"
     )
-    mock_get_avatar.return_value = user_service_pb2.GetAvatarResponse(
+    # mock_get_avatar.return_value = user_service_pb2.GetAvatarResponse(
+    #     status=0,
+    #     description="Success",
+    #     avatar="test"
+    # )
+    mock_get_avatar.return_value = avatar_service_pb2.GetAvatarResponse(
         status=0,
         description="Success",
         avatar="test"
@@ -60,7 +67,7 @@ def test_get_user_data_with_cookie(mock_get_avatar, mock_get_rp, client):
             "first_name": "Test",
             "last_name": "Test",
             "login": "test",
-            "avatar": "https://capyavatars.storage.yandexcloud.net/avatar/test_uuid/test"
+            "avatar": "test"
         }
     }
 
