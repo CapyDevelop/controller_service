@@ -1,6 +1,7 @@
 import os
 
 import auth_service.authservice_pb2_grpc as auth_pb2_grpc
+import avatar.avatar_service_pb2_grpc as avatar_pb2_grpc
 import coalition_service.coalition_service_pb2_grpc as coalition_pb2_grpc
 import election_service.election_grpc_pb2_grpc as election_pb2_grpc
 import grpc
@@ -19,6 +20,11 @@ CORS_ORIGIN = [
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=CORS_ORIGIN)
 Swagger(app)
+
+avatar_service_channel = grpc.insecure_channel(
+    f"{os.getenv('AVATAR_SERVICE_HOST')}:{os.getenv('AVATAR_SERVICE_PORT')}"
+)
+avatar_service_stub = avatar_pb2_grpc.AvatarServiceStub(avatar_service_channel)
 
 auth_service_channel = grpc.insecure_channel(
     f"{os.getenv('AUTH_SERVICE_HOST')}:{os.getenv('AUTH_SERVICE_PORT')}"
