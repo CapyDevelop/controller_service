@@ -1,9 +1,9 @@
 from unittest.mock import patch
 
 import pytest
+from avatar import avatar_service_pb2
 from election_service import election_grpc_pb2
 from user_service import user_service_pb2
-from avatar import avatar_service_pb2
 
 from controller import app
 
